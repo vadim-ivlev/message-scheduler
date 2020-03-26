@@ -32,34 +32,22 @@ func main() {
 	}
 
 	// As an admin, the app has access to read and write all data, regradless of Security Rules
+	// reading --------------------------------------
 	ref := client.NewRef("messages")
 	var data map[string]interface{}
 	if err := ref.Get(ctx, &data); err != nil {
 		log.Fatalln("Error reading from database:", err)
 	}
-	fmt.Println(data)
+	// fmt.Println(data)
 
-	fmt.Println("hello world")
-
+	// writing ---------------------------------------
 	// Post is a json-serializable type.
 	type Post struct {
 		Author string `json:"author,omitempty"`
 		Title  string `json:"title,omitempty"`
 	}
 
-	postsRef := ref.Child("posts")
-
-	// newPostRef, err := postsRef.Push(ctx, nil)
-	// if err != nil {
-	// 	log.Fatalln("Error pushing child node:", err)
-	// }
-
-	// if err := newPostRef.Set(ctx, &Post{
-	// 	Author: "gracehop",
-	// 	Title:  "Announcing COBOL, a New Programming Language",
-	// }); err != nil {
-	// 	log.Fatalln("Error setting value:", err)
-	// }
+	postsRef := client.NewRef("posts")
 
 	// We can also chain the two calls together
 	if _, err := postsRef.Push(ctx, &Post{
@@ -68,5 +56,6 @@ func main() {
 	}); err != nil {
 		log.Fatalln("Error pushing child node:", err)
 	}
-
+	// END ------------------------------------------
+	fmt.Println("hello world")
 }
