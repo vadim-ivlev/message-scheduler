@@ -41,4 +41,32 @@ func main() {
 
 	fmt.Println("hello world")
 
+	// Post is a json-serializable type.
+	type Post struct {
+		Author string `json:"author,omitempty"`
+		Title  string `json:"title,omitempty"`
+	}
+
+	postsRef := ref.Child("posts")
+
+	// newPostRef, err := postsRef.Push(ctx, nil)
+	// if err != nil {
+	// 	log.Fatalln("Error pushing child node:", err)
+	// }
+
+	// if err := newPostRef.Set(ctx, &Post{
+	// 	Author: "gracehop",
+	// 	Title:  "Announcing COBOL, a New Programming Language",
+	// }); err != nil {
+	// 	log.Fatalln("Error setting value:", err)
+	// }
+
+	// We can also chain the two calls together
+	if _, err := postsRef.Push(ctx, &Post{
+		Author: "alanisawesome",
+		Title:  "The Turing Machine",
+	}); err != nil {
+		log.Fatalln("Error pushing child node:", err)
+	}
+
 }
