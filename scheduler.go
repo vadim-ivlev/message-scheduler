@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"golang.org/x/net/context"
 
@@ -12,11 +13,16 @@ import (
 )
 
 func main() {
-
+	t0 := time.Now()
+	t1 := time.Now()
 	ctx := context.Background()
 	conf := &firebase.Config{
 		DatabaseURL: "https://rg-push.firebaseio.com",
 	}
+	t1 = time.Now()
+	println(t1.Sub(t0))
+	t0 = t1
+
 	// Fetch the service account key JSON file contents
 	opt := option.WithCredentialsFile("keys/rg-push-firebase-adminsdk-00.json")
 
