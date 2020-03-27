@@ -1,0 +1,17 @@
+# Параметры Firebase
+# для окружений dev, front, prod
+
+
+dev:
+    database_url: https://rg-push.firebaseio.com
+    credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json
+  
+  
+front:
+    database_url: https://rg-push.firebaseio.com
+    credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json
+    
+    
+prod:
+    database_url: https://rg-push.firebaseio.com
+    credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json

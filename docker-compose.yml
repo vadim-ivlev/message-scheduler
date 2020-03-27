@@ -1,0 +1,13 @@
+version: '2.0'
+
+services:
+
+
+  # сервер, где запущено приложение
+  message-scheduler-prod:
+    image: rgru/file-uploader:latest
+    container_name: file-uploader
+    restart: always
+    ports:
+      - 5500:5500
+

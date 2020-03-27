@@ -1,1 +1,15 @@
-keys
+.idea
+.vscode/settings.json
+push.sh
+
+
+credentials
+message-scheduler
+
+deploy/message-scheduler
+deploy/configs
+deploy/configs_example
+deploy/templates
+
+
+

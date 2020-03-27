@@ -1,8 +1,11 @@
 message-scheduler
 ==================
 
-GrapgQL API для посылки сообщений подписчикам топиков
-используя Firebase Cloud Messaging
+
+
+Это приложение реализует GraphQL API, используемый для рассылки уведомлений RGRU.
+
+
 
 
 Предпосылки
@@ -44,7 +47,7 @@ Firebase Cloud Messaging API. Таким образом, необходимое 
 
 Редактор, пользуясь приложением `message-admin`, вызывает функцию create_message() приложения `message-scheduler` указав запланированное время отправки сообщения.
 
-Функция message-sheduler.create-message() порождает запись в таблице сообщений `messages` базы данных Firebase, с указанием запланированного времени отправки.
+Функция message-scheduler.create-message() порождает запись в таблице сообщений `messages` базы данных Firebase, с указанием запланированного времени отправки.
 
 
 Триггер Firebase sendWaitingMessages() срабатывает через предопределенные интервалы времени. При каждом срабатывании он проверяет
@@ -65,7 +68,7 @@ Firebase Cloud Messaging API. Таким образом, необходимое 
 
 
 
-message-sheduler GraphQL API
+message-scheduler GraphQL API
 ------
 
 - `create_message( text, link, scheduled_time )` 
@@ -82,10 +85,10 @@ Firebase REST API
 - <https://us-central1-rg-push.cloudfunctions.net/unsubscribe_token_from_topic> - возвращает ok или ошибку
 
 
-Клиентская Javascrit библиотека
+Клиентская Javascript библиотека
 -------
 
-Javascrit файл `public/js/topic-subscription.js`, должен быть подключен к HTML странице, для 
+Javascript файл `public/js/topic-subscription.js`, должен быть подключен к HTML странице, для 
 подписки/отписки страницы на топики и если необходимо 
 для обработки поступающих уведомлений. 
 
