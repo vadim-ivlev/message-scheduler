@@ -2,7 +2,6 @@ package server
 
 import (
 	"errors"
-	"mime/multipart"
 
 	"github.com/gin-gonic/gin"
 	jsoniter "github.com/json-iterator/go"
@@ -42,32 +41,12 @@ func grahpqlHandler(c *gin.Context) {
 		c.JSON(statusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	uploadsMap, err := getMap(c)
-	if err != nil {
-		c.JSON(statusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	payload.Variables["map"] = uploadsMap
-	// multipart form
-	form, _ := c.MultipartForm()
-	if form != nil {
-		var files = make(map[string]*multipart.FileHeader)
-		for i := range form.File {
-			files[i] = form.File[i][0]
-		}
-		payload.Variables["files"] = files
-	}
-	// fmt.Println(payload.Variables)
 	c.JSON(statusOK, GraphQL(&payload))
 }
 
 func getPayload(c *gin.Context, payload *Payload) error {
 	if c.PostForm("operations") != "" {
-		err := json.Unmarshal([]byte(c.PostForm("operations")), &payload)
-		if err != nil {
-			return err
-		}
-		return nil
+		return json.Unmarshal([]byte(c.PostForm("operations")), &payload)
 	}
 	// check for existence of data from Form Data
 	if payload.Query == "" {
@@ -81,17 +60,6 @@ func getPayload(c *gin.Context, payload *Payload) error {
 		}
 	}
 	return nil
-}
-
-func getMap(c *gin.Context) (map[string][]string, error) {
-	var uploadsMap = make(map[string][]string)
-	if c.PostForm("map") != "" {
-		err := json.Unmarshal([]byte(c.PostForm("map")), &uploadsMap)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return uploadsMap, nil
 }
 
 func getVariables(c *gin.Context) (map[string]interface{}, error) {

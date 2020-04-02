@@ -12,7 +12,7 @@ func AddRoutes(r *gin.Engine) {
 	r.Handle("OPTIONS", "/schema", optionsHandler)
 	r.Handle("POST", "/schema", grahpqlHandler)
 	r.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
-	// Статика нужна для проверки (на проде не используется)
+	// Статика нужна для тестового приложения
 	r.Static("/public", "./public")
 }
 
