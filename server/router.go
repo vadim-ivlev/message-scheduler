@@ -7,15 +7,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// AddRoutes сопоставляет маршруты функциям контроллера
-func AddRoutes(r *gin.Engine) {
-	r.Handle("OPTIONS", "/schema", optionsHandler)
-	r.Handle("POST", "/schema", grahpqlHandler)
-	r.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
-	// Статика нужна для тестового приложения
-	r.Static("/public", "./public")
-}
-
 // Setup присоединяет функции middleware.
 func Setup() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
@@ -23,6 +14,18 @@ func Setup() *gin.Engine {
 	r.Use(prometeo.CountersMiddleware())
 	r.Use(HeadersMiddleware())
 	return r
+}
+
+// AddRoutes сопоставляет маршруты функциям контроллера
+func AddRoutes(r *gin.Engine) {
+	// для префлайт запросов
+	r.Handle("OPTIONS", "/schema", optionsHandler)
+	// для GraphQL запросов
+	r.Handle("POST", "/schema", graphqlHandler)
+	// для метрик Прометея
+	r.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
+	// для тестового приложения
+	r.Static("/public", "./public")
 }
 
 // Serve запускает сервер на заданном порту.

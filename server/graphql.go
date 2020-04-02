@@ -2,32 +2,9 @@ package server
 
 import (
 	"message-scheduler/pkg/fire"
-	"message-scheduler/pkg/prometeo"
 
 	"github.com/graphql-go/graphql"
 )
-
-// FUNCTIONS *******************************************************
-
-// // jsonStringToMap преобразует строку JSON в map[string]interface{}
-// func jsonStringToMap(s string) map[string]interface{} {
-// 	m := make(map[string]interface{})
-// 	_ = json.Unmarshal([]byte(s), &m)
-// 	return m
-// }
-
-// // getParamsFromBody извлекает параметры запроса из тела запроса
-// func getParamsFromBody(c *gin.Context) (map[string]interface{}, error) {
-// 	r := c.Request
-// 	mb := make(map[string]interface{})
-// 	if r.ContentLength > 0 {
-// 		errBodyDecode := json.NewDecoder(r.Body).Decode(&mb)
-// 		return mb, errBodyDecode
-// 	}
-// 	return mb, errors.New("No body")
-// }
-
-// G R A P H Q L ********************************************************************************
 
 var queryObject = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Query",
@@ -56,15 +33,10 @@ var schema, _ = graphql.NewSchema(graphql.SchemaConfig{
 })
 
 // GraphQL исполняет GraphQL запрос
-func GraphQL(payload *Payload) *graphql.Result {
-	result := graphql.Do(graphql.Params{
+func doGraphQL(query string, variables map[string]interface{}) *graphql.Result {
+	return graphql.Do(graphql.Params{
 		Schema:         schema,
-		RequestString:  payload.Query,
-		VariableValues: payload.Variables,
+		RequestString:  query,
+		VariableValues: variables,
 	})
-	if len(result.Errors) > 0 {
-		// инкрементируем счетчик ошибок GraphQL
-		prometeo.GraphQLErrorsTotal.Inc()
-	}
-	return result
 }

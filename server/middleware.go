@@ -8,11 +8,6 @@ import (
 func HeadersMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		// c.Header("Access-Control-Allow-Origin", "*")
-		// if hostIsAllowed(c.Request.Host) {
-		// 	c.Header("Access-Control-Allow-Origin", "*")
-		// }
-
 		origin := c.GetHeader("Origin")
 		// fmt.Println("Origin:", origin, "c.Request.Host:", c.Request.Host)
 		if origin != "" {
@@ -31,14 +26,3 @@ func HeadersMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-// // hostIsAllowed - проверяем пришел ли запрос с разрешенного хоста
-// func hostIsAllowed(host string) bool {
-// 	if strings.HasPrefix(host, "localhost") ||
-// 		strings.HasPrefix(host, "127.0.0.1") ||
-// 		strings.Contains(host, ".rg.ru:") ||
-// 		strings.HasSuffix(host, ".rg.ru") {
-// 		return true
-// 	}
-// 	return false
-// }
