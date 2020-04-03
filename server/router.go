@@ -24,7 +24,7 @@ func AddRoutes(r *gin.Engine) {
 	r.Handle("POST", "/schema", graphqlHandler)
 	// для метрик Прометея
 	r.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
-	// для тестового приложения
+	// для изображений в readme
 	r.Static("/public", "./public")
 }
 
