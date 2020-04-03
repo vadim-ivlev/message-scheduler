@@ -13,6 +13,7 @@ import (
 )
 
 var DatabaseURL = "https://rg-push.firebaseio.com"
+var CollectionName = "messages"
 
 func main() {
 	err := CreateMessage("/topics/rgru", "test golang message", "https://rg.ru", 5, "golang@rg.ru")

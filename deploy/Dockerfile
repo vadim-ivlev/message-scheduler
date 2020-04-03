@@ -12,7 +12,7 @@ COPY . .
 
 EXPOSE 5500
 
-CMD bash -c "cd /app && ./message-scheduler -serve 5500 -env=prod "
+CMD bash -c "cd /app && ./message-scheduler -port 8088 -env=prod "
 
 
 

@@ -41,9 +41,10 @@ func printGreetings(serverPort int, env string) {
 	MESSAGE_SCHEDULER started. 
 	Environment: %v
 	GraphQL endpoint -> http://localhost:%v/schema
-	GraphQL test     -> https://graphql-test.now.sh/?end_point=http://localhost:%v/schema&tab_name=message-scheduler:%v
+	GraphQL test     -> https://graphql-test.now.sh/?end_point=http://localhost:%v/schema&tab_name=message_scheduler:%v
+	Testing page     -> http://localhost:%v/public/send.html
 	CTRL-C to interrupt.
 	**********************************************
 `
-	fmt.Printf(msg, env, serverPort, serverPort, serverPort)
+	fmt.Printf(msg, env, serverPort, serverPort, serverPort, serverPort)
 }

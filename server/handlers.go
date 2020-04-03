@@ -6,10 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// optionsHandler Для проверки работоспособности.
 func optionsHandler(c *gin.Context) {
 	c.JSON(200, "")
 }
 
+// graphqlHandler Исполняет GraphQL запрос
 func graphqlHandler(c *gin.Context) {
 	query, variables := GetQueryAndVariables(c)
 	result := doGraphQL(query, variables)

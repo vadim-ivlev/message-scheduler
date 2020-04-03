@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "building executable"
+echo "building linux executable"
 
 export GO111MODULE=on
 

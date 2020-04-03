@@ -13,6 +13,7 @@ import (
 type appParams struct {
 	DatabaseURL     string `yaml:"database_url"`
 	CredentialsFile string `yaml:"credentials_file"`
+	CollectionName  string `yaml:"collection_name"`
 }
 
 // Params параметры приложения
@@ -95,7 +96,7 @@ func createMessage(to, message, link string, wait int, user string) error {
 		return err
 	}
 
-	_, err = client.NewRef("posts").Push(ctx, map[string]interface{}{
+	_, err = client.NewRef(Params.CollectionName).Push(ctx, map[string]interface{}{
 		"to":      to,
 		"message": message,
 		"link":    link,

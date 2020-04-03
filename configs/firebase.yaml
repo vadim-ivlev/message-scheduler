@@ -4,14 +4,17 @@
 
 dev:
     database_url: https://rg-push.firebaseio.com
+    collection_name: messages
     credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json
-  
-  
+    
+    
 front:
     database_url: https://rg-push.firebaseio.com
+    collection_name: messages
     credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json
     
     
 prod:
     database_url: https://rg-push.firebaseio.com
+    collection_name: messages
     credentials_file: ./credentials/rg-push-firebase-adminsdk-00.json
