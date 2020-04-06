@@ -77,6 +77,28 @@ func CreateMessage() *graphql.Field {
 	}
 }
 
+// DeleteMessage удаляет сообщение по его идентификатору
+func DeleteMessage() *graphql.Field {
+	return &graphql.Field{
+		Type:        graphql.String,
+		Description: "Удалить сообщение",
+		Args: graphql.FieldConfigArgument{
+			"message_id": &graphql.ArgumentConfig{
+				Type:        graphql.NewNonNull(graphql.String),
+				Description: "Идентификатор сообщения",
+			},
+		},
+		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+			messageID := p.Args["message_id"].(string)
+			err := deleteMessage(messageID)
+			if err != nil {
+				return "error", err
+			}
+			return "ok", nil
+		},
+	}
+}
+
 func createMessage(to, message, link string, wait int, user string) error {
 	ctx := context.Background()
 	conf := &firebase.Config{
@@ -104,4 +126,26 @@ func createMessage(to, message, link string, wait int, user string) error {
 		"user":    user,
 	})
 	return err
+}
+
+func deleteMessage(messageID string) error {
+	ctx := context.Background()
+	conf := &firebase.Config{
+		DatabaseURL: Params.DatabaseURL,
+	}
+	// Fetch the service account key JSON file contents
+	opt := option.WithCredentialsFile(Params.CredentialsFile)
+
+	// Initialize the app with a service account, granting admin privileges
+	app, err := firebase.NewApp(ctx, conf, opt)
+	if err != nil {
+		return err
+	}
+
+	client, err := app.Database(ctx)
+	if err != nil {
+		return err
+	}
+
+	return client.NewRef(Params.CollectionName).Child(messageID).Delete(ctx)
 }

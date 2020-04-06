@@ -24,6 +24,7 @@ var mutationObject = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
 		"create_message": fire.CreateMessage(),
+		"delete_message": fire.DeleteMessage(),
 	},
 })
 
