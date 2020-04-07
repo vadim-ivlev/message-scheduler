@@ -37,15 +37,15 @@ func readCommandLineParams() (serverPort int, env string) {
 // printGreetings печатаем приветственное сообщение
 func printGreetings(serverPort int, env string) {
 	msg := `
-	**********************************************
-	MESSAGE_SCHEDULER started. 
-	Environment: %v
+**********************************************
+M E S S A G E - S C H E D U L E R started
+Environment: %v
 
-	GraphQL endpoint -> http://localhost:%v/schema
-	Test page        -> https://message-admin.now.sh/?end_point=http://localhost:%v
-	
-	CTRL-C to interrupt.
-	**********************************************
+GraphQL endpoint -> http://localhost:%v/schema
+Test page        -> https://message-admin.now.sh/?end_point=http://localhost:%v
+
+CTRL-C to interrupt.
+**********************************************
 `
 	fmt.Printf(msg, env, serverPort, serverPort)
 }

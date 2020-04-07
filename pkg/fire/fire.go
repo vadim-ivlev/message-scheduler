@@ -1,3 +1,11 @@
+/*
+Основная функциональность пакета.
+
+Определяет функции для создания, мотификации, и удаления записей о новых сообщениях.
+
+Функции образующие интерфейс GraphQL внесены в отдельный файл fire_graphql.go
+*/
+
 package fire
 
 import (
@@ -5,7 +13,6 @@ import (
 	"io/ioutil"
 
 	firebase "firebase.google.com/go"
-	"github.com/graphql-go/graphql"
 	"google.golang.org/api/option"
 	"gopkg.in/yaml.v2"
 )
@@ -35,71 +42,16 @@ func ReadConfig(fileName string, env string) {
 	return
 }
 
-// CreateMessage добавляет сообщение в таблицу сообщений Firebase
-func CreateMessage() *graphql.Field {
-	return &graphql.Field{
-		Type:        graphql.String,
-		Description: "добавить новое сообщение",
-		Args: graphql.FieldConfigArgument{
-			"to": &graphql.ArgumentConfig{
-				Type:         graphql.NewNonNull(graphql.String),
-				Description:  "Токен пользователя или имя топика в виде '/topics/topicName'",
-				DefaultValue: "/topics/rgru",
-			},
-			"message": &graphql.ArgumentConfig{
-				Type:         graphql.String,
-				Description:  "Текст сообщения",
-				DefaultValue: "Тестовое сообщение",
-			},
-			"link": &graphql.ArgumentConfig{
-				Type:         graphql.String,
-				Description:  "Ссылка",
-				DefaultValue: "https://rg.ru",
-			},
-			"wait": &graphql.ArgumentConfig{
-				Type:         graphql.Int,
-				Description:  "Задержка сообщения в минутах",
-				DefaultValue: 5,
-			},
-		},
-		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			to := p.Args["to"].(string)
-			message := p.Args["message"].(string)
-			link := p.Args["link"].(string)
-			wait := p.Args["wait"].(int)
-			user := "golang@rg.ru"
-			err := createMessage(to, message, link, wait, user)
-			if err != nil {
-				return "error", err
-			}
-			return "ok", nil
-		},
-	}
-}
-
-// DeleteMessage удаляет сообщение по его идентификатору
-func DeleteMessage() *graphql.Field {
-	return &graphql.Field{
-		Type:        graphql.String,
-		Description: "Удалить сообщение",
-		Args: graphql.FieldConfigArgument{
-			"message_id": &graphql.ArgumentConfig{
-				Type:        graphql.NewNonNull(graphql.String),
-				Description: "Идентификатор сообщения",
-			},
-		},
-		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			messageID := p.Args["message_id"].(string)
-			err := deleteMessage(messageID)
-			if err != nil {
-				return "error", err
-			}
-			return "ok", nil
-		},
-	}
-}
-
-func createMessage(to, message, link string, wait int, user string) error {
+// createMessage Создает сообщение в коллекции сообщений Firebase.
+// Имя коллекция задается параметрами определенными в configs/firebase.yaml.
+// Входные параметры:
+// to - Кому посылается сообщение. Токен пользователя или идентификатор топика в виде: /topics/topic_name
+// message - Текст сообщения
+// link - Ссылка в сообщении
+// icon - Иконка сообщения
+// wait - Время ожидания отсылки сообщения в минутах
+// userEmail - Email пользователя который создал сообщение
+func createMessage(to, message, link, icon string, wait int, userEmail string) error {
 	ctx := context.Background()
 	conf := &firebase.Config{
 		DatabaseURL: Params.DatabaseURL,
@@ -122,12 +74,57 @@ func createMessage(to, message, link string, wait int, user string) error {
 		"to":      to,
 		"message": message,
 		"link":    link,
+		"icon":    icon,
 		"wait":    wait,
-		"user":    user,
+		"user":    userEmail,
 	})
 	return err
 }
 
+// updateMessage модифицирует сообщение в коллекции сообщений Firebase.
+// Имя коллекция задается параметрами определенными в configs/firebase.yaml.
+// Входные параметры:
+// messageID - Идентификатор сообщения
+// to - Кому посылается сообщение. Токен пользователя или идентификатор топика в виде: /topics/topic_name
+// message - Текст сообщения
+// link - Ссылка в сообщении
+// icon - Иконка сообщения
+// wait - Время ожидания отсылки сообщения в минутах
+// userEmail - Email пользователя который создал сообщение
+func updateMessage(messageID, to, message, link, icon string, wait int, userEmail string) error {
+	ctx := context.Background()
+	conf := &firebase.Config{
+		DatabaseURL: Params.DatabaseURL,
+	}
+	// Fetch the service account key JSON file contents
+	opt := option.WithCredentialsFile(Params.CredentialsFile)
+
+	// Initialize the app with a service account, granting admin privileges
+	app, err := firebase.NewApp(ctx, conf, opt)
+	if err != nil {
+		return err
+	}
+
+	client, err := app.Database(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = client.NewRef(Params.CollectionName).Child(messageID).Update(ctx, map[string]interface{}{
+		"to":      to,
+		"message": message,
+		"link":    link,
+		"icon":    icon,
+		"wait":    wait,
+		"user":    userEmail,
+	})
+	return err
+}
+
+// deleteMessage Удаляет сообщение из коллекции сообщений Firebase.
+// Имя коллекция задается параметрами определенными в configs/firebase.yaml.
+// параметры:
+// messageID - Идентификатор сообщения
 func deleteMessage(messageID string) error {
 	ctx := context.Background()
 	conf := &firebase.Config{
